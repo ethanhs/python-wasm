@@ -2,6 +2,9 @@
 
 shopt -s extglob
 
+mkdir -p cpython/builddir/host
+mkdir -p cpython/builddir/usr/local
+
 export PYTHON_FOR_BUILD="$(pwd)/cpython/builddir/build/python"
 
 # install emcc ports so configure is able to detect the dependencies
