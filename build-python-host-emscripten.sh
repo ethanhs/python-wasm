@@ -11,10 +11,20 @@ emmake make CROSS_COMPILE=yes FREEZE_MODULE=../build/Programs/_freeze_module PYT
 make altinstall prefix=../usr/local
 pushd ../usr/local
 # not needed, as the binary is already loaded by the .html
-# includes aren't need for distribution
+# includes aren't need for distribution, various libraries
+# won't be used in the web (at least for now)
 rm -rf bin include lib/pkgconfig lib/libpython3.11d.a
-mkdir -p lib/lib-dynload
-touch lib/lib-dynload/.gitignore
+rm -rf lib/python3.11/test
+rm -rf lib/python3.11/config-3.11d
+rm -rf lib/python3.11/tkinter
+rm -rf lib/python3.11/turtledemo
+rm -rf lib/python3.11/wsgiref
+rm -rf lib/python3.11/lib2to3
+rm -rf lib/python3.11/venv
+rm -rf lib/python3.11/encoding/*.py
+find lib/python3.11 -type f \( -iname \*.opt-1.pyc -o -iname \*.opt-2.pyc \) -delete
+mkdir -p lib/python3.11/lib-dynload
+touch lib/python3.11/lib-dynload
 popd
 emcc -Os -o python.html Programs/python.o libpython3.11d.a Modules/_decimal/libmpdec/libmpdec.a Modules/expat/libexpat.a -ldl -lm -s LZ4=1 --preload-file ../usr
 popd
