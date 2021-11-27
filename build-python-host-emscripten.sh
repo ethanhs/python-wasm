@@ -4,6 +4,9 @@ shopt -s extglob
 
 export PYTHON_FOR_BUILD="$(pwd)/cpython/builddir/build/python"
 
+# install emcc ports so configure is able to detect the dependencies
+embuilder build zlib bzip2
+
 pushd cpython/builddir/host
 cp ../../../config.site-wasm config.site-wasm
 CONFIG_SITE=config.site-wasm READELF=true ZLIB_CFLAGS="-s USE_ZLIB" emconfigure ../../configure -C --without-pymalloc --enable-big-digits=30 --with-pydebug --with-suffix=.wasm --with-ensurepip=no --disable-ipv6 --host=wasm32-unknown-emscripten --build=$(../../config.guess)
