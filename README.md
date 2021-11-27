@@ -16,10 +16,19 @@ Then, run the following commands:
 
 There will probably be errors, but that's just part of the fun of experimental platforms.
 
-Assuming things compiled correctly, you can have emscripten serve the Python executable and open it in your browser.
+Assuming things compiled correctly, you can have emscripten serve the Python executable and then open http://localhost:8000/python.html in your browser:
 
 ```
-emrun cpython-host/python.html
+./run-python.sh
 ```
 
 The CLI input is done via an input modal which is rather annoying. Also to get output you need to click `Cancel` on the modal...
+
+## Developing
+Once you've built the Emscripten'd Python, you can rebuild it via
+
+```
+./clean-host.sh
+./build-python-host-emscripten.sh
+```
+which will rebuild Python targeting emscripten and re-generate the `python.{html, wasm, js}`
