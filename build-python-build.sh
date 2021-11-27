@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-cd cpython-build/
-./configure --enable-optimizations
-make regen-frozen
-make -j
+pushd cpython/builddir/build
+../../configure -C
+make -j$(nproc)
+popd

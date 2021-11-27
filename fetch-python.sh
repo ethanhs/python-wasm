@@ -1,7 +1,8 @@
 #!/bin/env bash
 
-
-# Python built for the architecture your machine runs on
-git clone https://github.com/python/cpython.git cpython-host
-# Python built for wasm's architecture
-git clone https://github.com/python/cpython.git cpython-build
+git clone https://github.com/python/cpython.git
+# make build directories for build (the current system architecture)
+# and host, the emscripten/wasi architecture
+mkdir -p cpython/builddir/build
+mkdir -p cpython/builddir/host
+mkdir -p cpython/builddir/install

@@ -1,2 +1,2 @@
-cpython-build/
-cpython-host/
+build/
+cpython/
