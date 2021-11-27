@@ -5,4 +5,4 @@ git clone https://github.com/python/cpython.git
 # and host, the emscripten/wasi architecture
 mkdir -p cpython/builddir/build
 mkdir -p cpython/builddir/host
-mkdir -p cpython/builddir/install
+mkdir -p cpython/builddir/usr/local
