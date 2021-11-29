@@ -12,7 +12,7 @@ embuilder build zlib bzip2
 
 pushd cpython/builddir/host
 cp ../../../config.site-wasm config.site-wasm
-CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" BZIP2_LIBS="-s USE_BZIP2" emconfigure ../../configure -C --without-pymalloc --enable-big-digits=30 --with-pydebug --with-suffix=.wasm --with-ensurepip=no --disable-ipv6 --host=wasm32-unknown-emscripten --build=$(../../config.guess)
+CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" BZIP2_LIBS="-s USE_BZIP2" emconfigure ../../configure -C --without-pymalloc --enable-big-digits=30 --with-pydebug --with-suffix=.wasm --with-ensurepip=no --disable-ipv6 --host=$_PYTHON_HOST_PLATFORM --build=$(../../config.guess)
 ln -sfr Modules/Setup.stdlib Modules/Setup.local
 export FREEZE_MODULE=../build/Programs/_freeze_module
 emmake make CROSS_COMPILE=yes FREEZE_MODULE=../build/Programs/_freeze_module PYTHON_FOR_BUILD=../build/python _PYTHON_HOST_PLATFORM=wasm32-unknown-emscripten -j$(nproc)
@@ -22,8 +22,14 @@ pushd ../usr/local
 # includes aren't need for distribution, various libraries
 # won't be used in the web (at least for now)
 rm -rf bin include lib/pkgconfig lib/libpython3.11d.a
+rm -f lib/python3.11/_aix_support.py
+rm -f lib/python3.11/_bootsubprocess.py
 rm -rf lib/python3.11/_osx_support.py
-rm -rf lib/python3.11/config-3.11d
+rm -f lib/python3.11/antigravity.py
+rm -rf lib/python3.11/asyncio
+rm -rf lib/python3.11/concurrent
+rm -rf lib/python3.11/config-3.11*
+rm -rf lib/python3.11/ctypes
 rm -rf lib/python3.11/curses
 rm -rf lib/python3.11/dbm
 rm -rf lib/python3.11/distutils/command/wininst-*.exe
@@ -31,11 +37,14 @@ rm -rf lib/python3.11/encoding/*.py
 rm -rf lib/python3.11/ensurepip
 rm -rf lib/python3.11/idlelib
 rm -rf lib/python3.11/lib2to3
+rm -rf lib/python3.11/multiprocessing
+rm -rf lib/python3.11/pydoc_data
 rm -rf lib/python3.11/test
 rm -rf lib/python3.11/tkinter
 rm -rf lib/python3.11/turtle.py
 rm -rf lib/python3.11/turtledemo
 rm -rf lib/python3.11/venv
+rm -f lib/python3.11/webbrowser.py
 rm -rf lib/python3.11/wsgiref
 find lib/python3.11 -type f \( -iname \*.opt-1.pyc -o -iname \*.opt-2.pyc \) -delete
 # os.py is a marker for finding the correct lib directory
