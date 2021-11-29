@@ -32,7 +32,7 @@ rm -rf lib/python3.11/config-3.11*
 rm -rf lib/python3.11/ctypes
 rm -rf lib/python3.11/curses
 rm -rf lib/python3.11/dbm
-rm -rf lib/python3.11/distutils/command/wininst-*.exe
+rm -rf lib/python3.11/distutils
 rm -rf lib/python3.11/encoding/*.py
 rm -rf lib/python3.11/ensurepip
 rm -rf lib/python3.11/idlelib
