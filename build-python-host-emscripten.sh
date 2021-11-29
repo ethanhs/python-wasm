@@ -22,16 +22,21 @@ pushd ../usr/local
 # includes aren't need for distribution, various libraries
 # won't be used in the web (at least for now)
 rm -rf bin include lib/pkgconfig lib/libpython3.11d.a
-rm -rf lib/python3.11/test
+rm -rf lib/python3.11/_osx_support.py
 rm -rf lib/python3.11/config-3.11d
-rm -rf lib/python3.11/tkinter
-rm -rf lib/python3.11/turtledemo
-rm -rf lib/python3.11/wsgiref
-rm -rf lib/python3.11/lib2to3
-rm -rf lib/python3.11/venv
-rm -rf lib/python3.11/idlelib
-rm -rf lib/python3.11/distutils
+rm -rf lib/python3.11/curses
+rm -rf lib/python3.11/dbm
+rm -rf lib/python3.11/distutils/command/wininst-*.exe
 rm -rf lib/python3.11/encoding/*.py
+rm -rf lib/python3.11/ensurepip
+rm -rf lib/python3.11/idlelib
+rm -rf lib/python3.11/lib2to3
+rm -rf lib/python3.11/test
+rm -rf lib/python3.11/tkinter
+rm -rf lib/python3.11/turtle.py
+rm -rf lib/python3.11/turtledemo
+rm -rf lib/python3.11/venv
+rm -rf lib/python3.11/wsgiref
 find lib/python3.11 -type f \( -iname \*.opt-1.pyc -o -iname \*.opt-2.pyc \) -delete
 # os.py is a marker for finding the correct lib directory
 # so its important to keep
