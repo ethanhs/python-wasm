@@ -23,7 +23,7 @@ pushd ../usr/local
 # won't be used in the web (at least for now)
 rm -rf bin include lib/pkgconfig lib/libpython3.11d.a
 rm -rf lib/python3.11/_osx_support.py
-rm -rf lib/python3.11/config-3.11d
+rm -rf lib/python3.11/config-3.11*
 rm -rf lib/python3.11/curses
 rm -rf lib/python3.11/dbm
 rm -rf lib/python3.11/distutils/command/wininst-*.exe
