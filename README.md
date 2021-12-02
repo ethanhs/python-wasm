@@ -44,4 +44,4 @@ You can also download builds from our CI and test WASM build locally
    e.g. ``python3 -m http.server``
 * open http://localhost:8000/python.html
 * enter commands into the browser modal window and check the web developer
-  console (*F12*) for output
+  console (*F12*) for output. You may need to hit "Cancel" on the modal after sending input for output to appear.
