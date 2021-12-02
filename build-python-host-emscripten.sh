@@ -59,5 +59,5 @@ cd ../..
 mkdir -p lib/python3.11/lib-dynload
 touch lib/python3.11/lib-dynload/.gitignore
 popd
-emcc -Os -o python.html Programs/python.o libpython3.11d.a Modules/_decimal/libmpdec/libmpdec.a Modules/expat/libexpat.a -ldl -lm -s USE_ZLIB --preload-file ../usr
+emcc -Os -o python.html Programs/python.o libpython3.11d.a Modules/_decimal/libmpdec/libmpdec.a Modules/expat/libexpat.a -ldl -lm -s USE_ZLIB -s ASSERTIONS=1 --preload-file ../usr
 popd
