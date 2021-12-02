@@ -10,7 +10,7 @@ embuilder build zlib
 
 pushd cpython/builddir/host
 cp ../../../config.site-wasm config.site-wasm
-CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" emconfigure ../../configure -C --without-pymalloc --enable-big-digits=30 --with-pydebug --with-ensurepip=no --disable-ipv6 --host=wasm32-unknown-emscripten --build=$(../../config.guess) --with-build-python=$(pwd)/../build/python --with-freeze-module=$(pwd)/../build/Programs/_freeze_module
+CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" emconfigure ../../configure -C --without-pymalloc --with-pydebug --host=wasm32-unknown-emscripten --build=$(../../config.guess) --with-build-python=$(pwd)/../build/python --with-freeze-module=$(pwd)/../build/Programs/_freeze_module
 
 # Use Setup.stdlib and force rebuild of Makefile
 ln -sfr Modules/Setup.stdlib Modules/Setup.local
