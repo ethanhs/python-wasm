@@ -11,9 +11,15 @@ embuilder build zlib
 pushd cpython/builddir/host
 cp ../../../config.site-wasm config.site-wasm
 CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" emconfigure ../../configure -C --without-pymalloc --enable-big-digits=30 --with-pydebug --with-ensurepip=no --disable-ipv6 --host=wasm32-unknown-emscripten --build=$(../../config.guess) --with-build-python=$(pwd)/../build/python --with-freeze-module=$(pwd)/../build/Programs/_freeze_module
+
+# Use Setup.stdlib and force rebuild of Makefile
 ln -sfr Modules/Setup.stdlib Modules/Setup.local
+rm Modules/config.c
+make Modules/config.c
+
 emmake make -j$(nproc)
 make altinstall prefix=../usr/local
+
 pushd ../usr/local
 # not needed, as the binary is already loaded by the .html
 # includes aren't need for distribution, various libraries
