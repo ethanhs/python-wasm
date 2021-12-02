@@ -1,0 +1,72 @@
+---
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron:  '30 2 * * *'
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        required: false
+
+jobs:
+  emscripten:
+    name: "Emscripten build"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "checkout python-wasm"
+        uses: "actions/checkout@v2"
+      - name: "checkout CPython"
+        uses: "actions/checkout@v2"
+        with:
+          repository: python/cpython
+          path: cpython
+          ref: main
+      - name: "Verify checkout"
+        run: |
+          test -x build-python-build.sh || exit 1
+          test -x cpython/configure || exit 2
+      - name: "Pull build image"
+        run: docker pull quay.io/tiran/cpythonbuild:ubuntu-impish-wasm
+      - name: "Build build Python"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:ubuntu-impish-wasm ./build-python-build.sh
+      - name: "Build emscripten Python"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:ubuntu-impish-wasm ./build-python-host-emscripten.sh
+      - name: "Check artifacts"
+        run: |
+          ls -la --si cpython/builddir/host/python*
+          ls -la cpython/builddir/host/Modules/
+          test -e cpython/builddir/host/python.data || exit 1
+      - name: "Upload wasm artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: wasm
+          path: |
+            cpython/builddir/host/python.wasm
+            cpython/builddir/host/python.html
+            cpython/builddir/host/python.js
+            cpython/builddir/host/python.data
+          if-no-files-found: error
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          path: |
+            cpython/builddir/host/config.log
+            cpython/builddir/host/config.cache
+            cpython/builddir/host/Makefile
+            cpython/builddir/host/pyconfig.h
+            cpython/builddir/host/libpython*.a
+            cpython/builddir/host/Modules/Setup.local
+            cpython/builddir/host/Modules/Setup.stdlib
+            cpython/builddir/host/Modules/config.c
+            cpython/builddir/host/Modules/_decimal/libmpdec/libmpdec.a
+            cpython/builddir/host/Modules/expat/libexpat.a
+            cpython/builddir/host/Programs/python.o
+          if-no-files-found: error
