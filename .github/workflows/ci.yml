@@ -34,11 +34,11 @@ jobs:
           test -x build-python-build.sh || exit 1
           test -x cpython/configure || exit 2
       - name: "Pull build image"
-        run: docker pull quay.io/tiran/cpythonbuild:ubuntu-impish-wasm
+        run: docker pull quay.io/tiran/cpythonbuild:emsdk3
       - name: "Build build Python"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:ubuntu-impish-wasm ./build-python-build.sh
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-build.sh
       - name: "Build emscripten Python"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:ubuntu-impish-wasm ./build-python-host-emscripten.sh
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-host-emscripten.sh
       - name: "Check artifacts"
         run: |
           ls -la --si cpython/builddir/host/python*
