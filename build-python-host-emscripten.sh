@@ -6,11 +6,11 @@ mkdir -p cpython/builddir/host
 mkdir -p cpython/builddir/usr/local
 
 # install emcc ports so configure is able to detect the dependencies
-embuilder build zlib
+embuilder build zlib bzip2
 
 pushd cpython/builddir/host
 cp ../../../config.site-wasm config.site-wasm
-CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" emconfigure ../../configure -C --without-pymalloc --with-pydebug --host=wasm32-unknown-emscripten --build=$(../../config.guess) --with-build-python=$(pwd)/../build/python --with-freeze-module=$(pwd)/../build/Programs/_freeze_module
+CONFIG_SITE=config.site-wasm READELF=true ZLIB_LIBS="-s USE_ZLIB" BZIP2_LIBS="-s USE_BZIP2" emconfigure ../../configure -C --without-pymalloc --with-pydebug --host=wasm32-unknown-emscripten --build=$(../../config.guess) --with-build-python=$(pwd)/../build/python --with-freeze-module=$(pwd)/../build/Programs/_freeze_module
 
 # Use Setup.stdlib and force rebuild of Makefile
 ln -sfr Modules/Setup.stdlib Modules/Setup.local
@@ -59,5 +59,5 @@ cd ../..
 mkdir -p lib/python3.11/lib-dynload
 touch lib/python3.11/lib-dynload/.gitignore
 popd
-emcc -Os -o python.html Programs/python.o libpython3.11d.a Modules/_decimal/libmpdec/libmpdec.a Modules/expat/libexpat.a -ldl -lm -s USE_ZLIB -s ASSERTIONS=1 --preload-file ../usr
+emcc -Os -o python.html Programs/python.o libpython3.11d.a Modules/_decimal/libmpdec/libmpdec.a Modules/expat/libexpat.a -ldl -lm -s USE_ZLIB -s USE_BZIP2 -s ASSERTIONS=1 --preload-file ../usr
 popd
