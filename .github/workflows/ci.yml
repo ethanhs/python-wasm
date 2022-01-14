@@ -37,39 +37,69 @@ jobs:
         run: docker pull quay.io/tiran/cpythonbuild:emsdk3
       - name: "Build build Python"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-build.sh
-      - name: "Build emscripten Python"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-host-emscripten.sh
+      - name: "Build emscripten Python for browser"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-browser.sh
+      - name: "Build emscripten Python for node"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-node.sh
       - name: "Check artifacts"
         run: |
-          ls -la --si cpython/builddir/host/python*
-          ls -la cpython/builddir/host/Modules/
-          test -e cpython/builddir/host/python.data || exit 1
-      - name: "Upload wasm artifacts"
+          ls -la --si cpython/builddir/emscripten-browser/python*
+          ls -la --si cpython/builddir/emscripten-node/python*
+          ls -la cpython/builddir/emscripten-browser/Modules/
+          test -e cpython/builddir/emscripten-browser/python.data || exit 1
+          test -e cpython/builddir/emscripten-node/python.wasm || exit 1
+      - name: "Upload browser build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: wasm
+          name: emscripten-browser
           path: |
-            cpython/builddir/host/python.wasm
-            cpython/builddir/host/python.html
-            cpython/builddir/host/python.js
-            cpython/builddir/host/python.data
+            cpython/builddir/emscripten-browser/python.wasm
+            cpython/builddir/emscripten-browser/python.html
+            cpython/builddir/emscripten-browser/python.js
+            cpython/builddir/emscripten-browser/python.data
           if-no-files-found: error
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: build
+          name: build-browser
           path: |
-            cpython/builddir/host/config.log
-            cpython/builddir/host/config.cache
-            cpython/builddir/host/Makefile
-            cpython/builddir/host/pyconfig.h
-            cpython/builddir/host/libpython*.a
-            cpython/builddir/host/Modules/Setup.local
-            cpython/builddir/host/Modules/Setup.stdlib
-            cpython/builddir/host/Modules/config.c
-            cpython/builddir/host/Modules/_decimal/libmpdec/libmpdec.a
-            cpython/builddir/host/Modules/expat/libexpat.a
-            cpython/builddir/host/Programs/python.o
+            cpython/builddir/emscripten-browser/config.log
+            cpython/builddir/emscripten-browser/config.cache
+            cpython/builddir/emscripten-browser/Makefile
+            cpython/builddir/emscripten-browser/pyconfig.h
+            cpython/builddir/emscripten-browser/libpython*.a
+            cpython/builddir/emscripten-browser/Modules/Setup.local
+            cpython/builddir/emscripten-browser/Modules/Setup.stdlib
+            cpython/builddir/emscripten-browser/Modules/config.c
+            cpython/builddir/emscripten-browser/Modules/_decimal/libmpdec/libmpdec.a
+            cpython/builddir/emscripten-browser/Modules/expat/libexpat.a
+            cpython/builddir/emscripten-browser/Programs/python.o
+          if-no-files-found: error
+      - name: "Upload node build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: emscripten-node
+          path: |
+            cpython/builddir/emscripten-node/python.wasm
+            cpython/builddir/emscripten-node/python-worker.js
+            cpython/builddir/emscripten-node/python.js
+          if-no-files-found: error
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-node
+          path: |
+            cpython/builddir/emscripten-node/config.log
+            cpython/builddir/emscripten-node/config.cache
+            cpython/builddir/emscripten-node/Makefile
+            cpython/builddir/emscripten-node/pyconfig.h
+            cpython/builddir/emscripten-node/libpython*.a
+            cpython/builddir/emscripten-node/Modules/Setup.local
+            cpython/builddir/emscripten-node/Modules/Setup.stdlib
+            cpython/builddir/emscripten-node/Modules/config.c
+            cpython/builddir/emscripten-node/Modules/_decimal/libmpdec/libmpdec.a
+            cpython/builddir/emscripten-node/Modules/expat/libexpat.a
+            cpython/builddir/emscripten-node/Programs/python.o
           if-no-files-found: error
   ghpages:
     name: "Upload to GitHub pages"
@@ -80,7 +110,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: wasm
+          name: emscripten-browser
           path: wasm
       - name: "Prepare artifacts for Github Pages"
         run: |

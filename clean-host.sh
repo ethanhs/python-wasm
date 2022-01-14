@@ -1,6 +1,6 @@
 #!/bin/env bash
 
-rm -rf cpython/builddir/host
-mkdir -p cpython/builddir/host
-rm -rf cpython/builddir/usr
-mkdir -p cpython/builddir/usr
+rm -rf cpython/builddir/emscripten-browser
+mkdir -p cpython/builddir/emscripten-browser
+rm -rf cpython/builddir/emscripten-node
+mkdir -p cpython/builddir/emscripten-node
