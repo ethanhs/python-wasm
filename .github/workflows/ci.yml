@@ -48,7 +48,7 @@ jobs:
           ls -la cpython/builddir/emscripten-browser/Modules/
           test -e cpython/builddir/emscripten-browser/python.data || exit 1
           test -e cpython/builddir/emscripten-node/python.wasm || exit 1
-      - name: "Upload wasm artifacts"
+      - name: "Upload browser build artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: emscripten-browser
@@ -75,7 +75,7 @@ jobs:
             cpython/builddir/emscripten-browser/Modules/expat/libexpat.a
             cpython/builddir/emscripten-browser/Programs/python.o
           if-no-files-found: error
-      - name: "Upload wasm artifacts"
+      - name: "Upload node build artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: emscripten-node

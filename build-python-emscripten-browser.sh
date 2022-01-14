@@ -1,6 +1,5 @@
 #!/bin/env bash
 
-shopt -s extglob
 
 mkdir -p cpython/builddir/emscripten-browser
 
