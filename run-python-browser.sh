@@ -1,3 +1,8 @@
 #!/bin/env bash
 
-emrun --no_browser --port 8000 cpython/builddir/emscripten-browser/python.html
+cp cpython/builddir/emscripten-browser/python.* browser-ui/worker/
+
+pushd .
+cd browser-ui
+python3 server.py
+popd
