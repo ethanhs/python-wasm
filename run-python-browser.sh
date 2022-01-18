@@ -4,5 +4,5 @@ cp cpython/builddir/emscripten-browser/python.* browser-ui/worker/
 
 pushd .
 cd browser-ui
-python3 server.py $@
+../cpython/builddir/build/python server.py $@
 popd
