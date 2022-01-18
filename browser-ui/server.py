@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+import mimetypes
+mimetypes.add_type(".wasm", "application/wasm")
+
 import argparse
 from http import server
 
