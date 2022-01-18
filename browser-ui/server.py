@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import argparse
-from email.policy import default
 from http import server
 
 parser = argparse.ArgumentParser(description='Start a local webserver with a Python terminal.')
