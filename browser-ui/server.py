@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import mimetypes
-mimetypes.add_type(".wasm", "application/wasm")
+
+mimetypes.init()
+if not ".wasm" in mimetypes.types_map:
+    mimetypes.types_map[".wasm"] = "application/wasm"
 
 import argparse
 from http import server
