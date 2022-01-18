@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import socketserver
 from http import server # Python 3
 import os
 
@@ -17,6 +16,4 @@ class MyHTTPRequestHandler(server.SimpleHTTPRequestHandler):
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
 
 
-with socketserver.TCPServer(("", PORT), MyHTTPRequestHandler) as httpd:
-    print("Serving on port", PORT)
-    httpd.serve_forever()
+server.test(HandlerClass=MyHTTPRequestHandler, protocol="HTTP/1.1", port=PORT)

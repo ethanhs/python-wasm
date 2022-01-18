@@ -60,5 +60,4 @@ export class WorkerManager {
             this.standardIO.stderr(`Exited with status: ${event.data.returnCode}\r\n`)
         }
       }
-
 }
