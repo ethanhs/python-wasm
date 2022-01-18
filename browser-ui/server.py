@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 
-from http import server # Python 3
-import os
+import argparse
+from email.policy import default
+from http import server
 
-PORT = int(os.getenv("PORT", 8000))
+parser = argparse.ArgumentParser(description='Start a local webserver with a Python terminal.')
+parser.add_argument('--port', type=int, default=8000, help='port for the http server to listen on')
+args = parser.parse_args()
 
 class MyHTTPRequestHandler(server.SimpleHTTPRequestHandler):
     def end_headers(self):
@@ -16,4 +19,4 @@ class MyHTTPRequestHandler(server.SimpleHTTPRequestHandler):
         self.send_header("Cross-Origin-Embedder-Policy", "require-corp")
 
 
-server.test(HandlerClass=MyHTTPRequestHandler, protocol="HTTP/1.1", port=PORT)
+server.test(HandlerClass=MyHTTPRequestHandler, protocol="HTTP/1.1", port=args.port)
