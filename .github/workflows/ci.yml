@@ -5,10 +5,10 @@ on:
   push:
     branches:
       - main
-    types: [opened, synchronize, reopened, closed]
   pull_request:
     branches:
       - main
+    types: [opened, synchronize, reopened, closed]
   schedule:
     - cron:  '30 2 * * *'
   workflow_dispatch:
