@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 
 mkdir -p cpython/builddir/emscripten-node

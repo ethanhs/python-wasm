@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 rm -rf cpython/builddir/emscripten-browser
 mkdir -p cpython/builddir/emscripten-browser
