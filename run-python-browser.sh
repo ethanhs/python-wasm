@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 
 cp cpython/builddir/emscripten-browser/python.* browser-ui/worker/
 
