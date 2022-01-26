@@ -207,7 +207,7 @@ Module['FS_createPath']("/usr/local/lib/python3.11", "lib-dynload", true, true);
     }
   
    }
-   loadPackage({"files": [{"filename": "/usr/local/lib/python311.zip", "start": 0, "end": 3024627}, {"filename": "/usr/local/lib/python3.11/os.py", "start": 3024627, "end": 3064098}, {"filename": "/usr/local/lib/python3.11/lib-dynload/.empty", "start": 3064098, "end": 3064098}], "remote_package_size": 3064098, "package_uuid": "5a857a37-63d1-45f0-88ed-3d4375a2dd24"});
+   loadPackage({"files": [{"filename": "/usr/local/lib/python311.zip", "start": 0, "end": 3024467}, {"filename": "/usr/local/lib/python3.11/os.py", "start": 3024467, "end": 3063938}, {"filename": "/usr/local/lib/python3.11/lib-dynload/.empty", "start": 3063938, "end": 3063938}], "remote_package_size": 3063938, "package_uuid": "5be05c55-9132-4873-a0e1-0188a2cd5376"});
   
   })();
   
