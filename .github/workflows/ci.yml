@@ -105,6 +105,7 @@ jobs:
     name: "Upload to GitHub pages"
     runs-on: "ubuntu-latest"
     needs: emscripten
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
@@ -113,7 +114,7 @@ jobs:
           path: wasm
       - name: "Prepare artifacts for Github Pages"
         run: |
-          mv wasm/python.html wasm/index.html
+          cp -r browser-ui/* wasm/
       - name: Deploy CPython on WASM 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.7
         with:
