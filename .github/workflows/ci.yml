@@ -17,37 +17,95 @@ on:
         required: false
 
 jobs:
-  emscripten:
-    name: "Emscripten build"
+  build-python:
+    name: "Build build Python"
     runs-on: "ubuntu-latest"
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
-      - name: "checkout CPython"
-        uses: "actions/checkout@v2"
-        with:
-          repository: python/cpython
-          path: cpython
-          ref: main
-      - name: "Verify checkout"
-        run: |
-          test -x build-python-build.sh || exit 1
-          test -x cpython/configure || exit 2
-      - name: "Pull build image"
-        run: docker pull quay.io/tiran/cpythonbuild:emsdk3
+      - uses: ./.github/actions/prepare
       - name: "Build build Python"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-build.sh
-      - name: "Build emscripten Python for browser"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-browser.sh
+      - name: "Cache build Python"
+        uses: actions/cache@v2
+        with:
+          path: cpython/builddir/build
+          key: cpython-build-${{ hashFiles('cpython/builddir/build/libpython*.a') }}
+  emscripte-node:
+    name: "Build Emscripten node"
+    runs-on: "ubuntu-latest"
+    needs: build-python
+    steps:
+      - name: "checkout python-wasm"
+        uses: "actions/checkout@v2"
+      - uses: ./.github/actions/prepare
+      - name: "Cache build Python"
+        uses: actions/cache@v2
+        with:
+          path: cpython/builddir/build
+          key: cpython-build-unknown
+          restore-keys: |
+            cpython-build-
+      - name: "Check build Python"
+        run: test -e cpython/builddir/build/python || exit 1
       - name: "Build emscripten Python for node"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-node.sh
       - name: "Check artifacts"
         run: |
-          ls -la --si cpython/builddir/emscripten-browser/python*
           ls -la --si cpython/builddir/emscripten-node/python*
+          test -e cpython/builddir/emscripten-node/python.wasm || exit 1
+      - name: "Run tests"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh
+      - name: "Upload node build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: emscripten-node
+          path: |
+            cpython/builddir/emscripten-node/python.wasm
+            cpython/builddir/emscripten-node/python.worker.js
+            cpython/builddir/emscripten-node/python.js
+          if-no-files-found: error
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-node
+          path: |
+            cpython/builddir/emscripten-node/config.log
+            cpython/builddir/emscripten-node/config.cache
+            cpython/builddir/emscripten-node/Makefile
+            cpython/builddir/emscripten-node/pyconfig.h
+            cpython/builddir/emscripten-node/libpython*.a
+            cpython/builddir/emscripten-node/Modules/Setup.local
+            cpython/builddir/emscripten-node/Modules/Setup.stdlib
+            cpython/builddir/emscripten-node/Modules/config.c
+            cpython/builddir/emscripten-node/Modules/_decimal/libmpdec/libmpdec.a
+            cpython/builddir/emscripten-node/Modules/expat/libexpat.a
+            cpython/builddir/emscripten-node/Programs/python.o
+          if-no-files-found: error
+  emscripte-browser:
+    name: "Build Emscripten browser"
+    runs-on: "ubuntu-latest"
+    needs: build-python
+    steps:
+      - name: "checkout python-wasm"
+        uses: "actions/checkout@v2"
+      - uses: ./.github/actions/prepare
+      - name: "Cache build Python"
+        uses: actions/cache@v2
+        with:
+          path: cpython/builddir/build
+          key: cpython-build-unknown
+          restore-keys: |
+            cpython-build-
+      - name: "Check build Python"
+        run: test -e cpython/builddir/build/python || exit 1
+      - name: "Build emscripten Python for browser"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-browser.sh
+      - name: "Check artifacts"
+        run: |
+          ls -la --si cpython/builddir/emscripten-browser/python*
           ls -la cpython/builddir/emscripten-browser/Modules/
           test -e cpython/builddir/emscripten-browser/python.data || exit 1
-          test -e cpython/builddir/emscripten-node/python.wasm || exit 1
       - name: "Upload browser build artifacts"
         uses: actions/upload-artifact@v2
         with:
@@ -75,36 +133,10 @@ jobs:
             cpython/builddir/emscripten-browser/Modules/expat/libexpat.a
             cpython/builddir/emscripten-browser/Programs/python.o
           if-no-files-found: error
-      - name: "Upload node build artifacts"
-        uses: actions/upload-artifact@v2
-        with:
-          name: emscripten-node
-          path: |
-            cpython/builddir/emscripten-node/python.wasm
-            cpython/builddir/emscripten-node/python.worker.js
-            cpython/builddir/emscripten-node/python.js
-          if-no-files-found: error
-      - name: "Upload build artifacts"
-        uses: actions/upload-artifact@v2
-        with:
-          name: build-node
-          path: |
-            cpython/builddir/emscripten-node/config.log
-            cpython/builddir/emscripten-node/config.cache
-            cpython/builddir/emscripten-node/Makefile
-            cpython/builddir/emscripten-node/pyconfig.h
-            cpython/builddir/emscripten-node/libpython*.a
-            cpython/builddir/emscripten-node/Modules/Setup.local
-            cpython/builddir/emscripten-node/Modules/Setup.stdlib
-            cpython/builddir/emscripten-node/Modules/config.c
-            cpython/builddir/emscripten-node/Modules/_decimal/libmpdec/libmpdec.a
-            cpython/builddir/emscripten-node/Modules/expat/libexpat.a
-            cpython/builddir/emscripten-node/Programs/python.o
-          if-no-files-found: error
   ghpages:
     name: "Upload to GitHub pages"
     runs-on: "ubuntu-latest"
-    needs: emscripten
+    needs: emscripte-browser
     # Relies on `on` restricting which branches trigger this job.
     if: ${{ github.event_name == 'push' }}
     steps:
