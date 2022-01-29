@@ -3,21 +3,11 @@ description: 'Common setup routines'
 runs:
   using: "composite"
   steps:
-    - name: "checkout CPython"
-      uses: "actions/checkout@v2"
-      with:
-        repository: python/cpython
-        path: cpython
-        ref: main
-    - name: "Verify checkout"
-      shell: bash
-      run: |
-        test -x build-python-build.sh || exit 1
-        test -x cpython/configure || exit 2
     - name: Create container cache directory
       shell: bash
       run: mkdir -p /tmp/container-cache
-    - name: Get data cache key
+    # container is fetched once a day
+    - name: Get date cache key
       id: get-date
       shell: bash
       run: |
@@ -27,7 +17,7 @@ runs:
       uses: actions/cache@v1
       with:
         path: /tmp/container-cache
-        key: image-cache-${{ steps.get-date.outputs.date }}-1
+        key: image-cache-${{ steps.get-date.outputs.date }}
     - name: "Pull build image"
       if: ${{ steps.container-cache.outputs.cache-hit != 'true' }}
       shell: bash

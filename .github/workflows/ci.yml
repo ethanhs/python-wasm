@@ -23,14 +23,26 @@ jobs:
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
-      - uses: ./.github/actions/prepare
+      - name: "checkout CPython"
+        uses: "actions/checkout@v2"
+        with:
+          repository: python/cpython
+          path: cpython
+          ref: main
+      - name: "Verify checkout"
+        shell: bash
+        run: |
+          test -x build-python-build.sh || exit 1
+          test -x cpython/configure || exit 2
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Build build Python"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-build.sh
       - name: "Cache build Python"
         uses: actions/cache@v2
         with:
-          path: cpython/builddir/build
-          key: cpython-build-${{ hashFiles('cpython/builddir/build/libpython*.a') }}
+          path: cpython
+          key: cpython-${{ runner.os }}-${{ github.sha }}
   emscripte-node:
     name: "Build Emscripten node"
     runs-on: "ubuntu-latest"
@@ -38,16 +50,17 @@ jobs:
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
-      - uses: ./.github/actions/prepare
-      - name: "Cache build Python"
+      - name: "Fetch cached build Python"
         uses: actions/cache@v2
         with:
-          path: cpython/builddir/build
-          key: cpython-build-unknown
-          restore-keys: |
-            cpython-build-
+          path: cpython
+          key: cpython-${{ runner.os }}-${{ github.sha }}
       - name: "Check build Python"
-        run: test -e cpython/builddir/build/python || exit 1
+        run: |
+          test -e cpython/builddir/build/python || exit 1
+          test -e cpython/configure || exit 2
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Build emscripten Python for node"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-node.sh
       - name: "Check artifacts"
@@ -89,16 +102,17 @@ jobs:
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
-      - uses: ./.github/actions/prepare
-      - name: "Cache build Python"
+      - name: "Fetch cached build Python"
         uses: actions/cache@v2
         with:
-          path: cpython/builddir/build
-          key: cpython-build-unknown
-          restore-keys: |
-            cpython-build-
+          path: cpython
+          key: cpython-${{ runner.os }}-${{ github.sha }}
       - name: "Check build Python"
-        run: test -e cpython/builddir/build/python || exit 1
+        run: |
+          test -e cpython/builddir/build/python || exit 1
+          test -e cpython/configure || exit 2
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Build emscripten Python for browser"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-browser.sh
       - name: "Check artifacts"
