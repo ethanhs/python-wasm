@@ -34,7 +34,7 @@ runs:
       run: |
         docker pull quay.io/tiran/cpythonbuild:emsdk3
         docker save -o /tmp/container-cache/cpemsdk3.tar quay.io/tiran/cpythonbuild:emsdk3
-    - name: "Load container form cache"
+    - name: "Load container from cache"
       if: ${{ steps.container-cache.outputs.cache-hit == 'true' }}
       shell: bash
       run: |
