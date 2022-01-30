@@ -67,6 +67,9 @@ jobs:
         run: |
           ls -la --si cpython/builddir/emscripten-node/python*
           test -e cpython/builddir/emscripten-node/python.wasm || exit 1
+      - name: "Print test.pythoninfo"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-node.sh -m test.pythoninfo
+        continue-on-error: true
       - name: "Run tests"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh
       - name: "Upload node build artifacts"
