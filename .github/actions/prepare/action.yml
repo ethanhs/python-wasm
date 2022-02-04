@@ -1,0 +1,31 @@
+name: 'Common setup'
+description: 'Common setup routines'
+runs:
+  using: "composite"
+  steps:
+    - name: Create container cache directory
+      shell: bash
+      run: mkdir -p /tmp/container-cache
+    # container is fetched once a day
+    - name: Get date cache key
+      id: get-date
+      shell: bash
+      run: |
+        echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+    - name: Get container cache
+      id: container-cache
+      uses: actions/cache@v1
+      with:
+        path: /tmp/container-cache
+        key: image-cache-${{ steps.get-date.outputs.date }}
+    - name: "Pull build image"
+      if: ${{ steps.container-cache.outputs.cache-hit != 'true' }}
+      shell: bash
+      run: |
+        docker pull quay.io/tiran/cpythonbuild:emsdk3
+        docker save -o /tmp/container-cache/cpemsdk3.tar quay.io/tiran/cpythonbuild:emsdk3
+    - name: "Load container from cache"
+      if: ${{ steps.container-cache.outputs.cache-hit == 'true' }}
+      shell: bash
+      run: |
+        docker load -i /tmp/container-cache/cpemsdk3.tar
