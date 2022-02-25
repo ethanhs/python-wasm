@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 git clone https://github.com/python/cpython.git
 # make build directories for build (the current system architecture)

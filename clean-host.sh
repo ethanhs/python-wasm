@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 rm -rf cpython/builddir/emscripten-browser
 mkdir -p cpython/builddir/emscripten-browser
