@@ -21,9 +21,6 @@ ac_cv_func_prlimit=no
 # unsupported syscall, https://github.com/emscripten-core/emscripten/issues/13393
 ac_cv_func_shutdown=no
 
-# breaks build, see https://github.com/ethanhs/python-wasm/issues/16
-ac_cv_lib_bz2_BZ2_bzCompress=no
-
 # The rest is based on pyodide
 # https://github.com/pyodide/pyodide/blob/main/cpython/pyconfig.undefs.h
 
