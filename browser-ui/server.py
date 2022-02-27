@@ -3,7 +3,7 @@
 import mimetypes
 
 mimetypes.init()
-if not ".wasm" in mimetypes.types_map:
+if ".wasm" not in mimetypes.types_map:
     mimetypes.types_map[".wasm"] = "application/wasm"
 
 import argparse
