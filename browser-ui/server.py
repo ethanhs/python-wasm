@@ -4,7 +4,7 @@ import mimetypes
 
 mimetypes.init()
 if ".wasm" not in mimetypes.types_map:
-    mimetypes.types_map[".wasm"] = "application/wasm"
+    mimetypes.add_type("application/wasm", ".wasm")
 
 import argparse
 from http import server
