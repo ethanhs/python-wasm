@@ -28,6 +28,7 @@ test_bisect
 test_bool
 test_buffer
 test_bufio
+test_builtin
 test_bytes
 test_bz2
 test_c_locale_coercion
@@ -120,6 +121,7 @@ test_file
 test_file_eintr
 test_filecmp
 test_fileinput
+test_fileio
 test_fileutils
 test_finalization
 test_float
@@ -141,10 +143,12 @@ test_gc
 test_gdb
 test_generator_stop
 test_generators
+test_genericalias
 test_genericclass
 test_genexps
 test_getargs2
 test_getopt
+test_getpass
 test_getpath
 test_gettext
 test_global
@@ -164,8 +168,10 @@ test_idle
 test_imghdr
 test_imp
 test_index
+test_inspect
 test_int
 test_int_literal
+test_interpreters
 test_ioctl
 test_ipaddress
 test_isinstance
@@ -175,6 +181,7 @@ test_itertools
 test_keyword
 test_keywordonlyarg
 test_kqueue
+test_largefile
 test_lib2to3
 test_linecache
 test_list
@@ -232,8 +239,10 @@ test_property
 test_pstats
 test_pty
 test_pulldom
+test_pwd
 test_py_compile
 test_pyclbr
+test_pyexpat
 test_queue
 test_quopri
 test_raise
@@ -257,15 +266,14 @@ test_shelve
 test_shlex
 test_site
 test_slice
-test_smtpnet
 test_sndhdr
-test_socketserver
 test_sort
 test_source_encoding
 test_spwd
 test_ssl
 test_stable_abi_ctypes
 test_startfile
+test_stat
 test_statistics
 test_string
 test_string_literals
@@ -313,6 +321,7 @@ test_typing
 test_ucn
 test_unary
 test_unicode
+test_unicode_file_functions
 test_unicode_identifiers
 test_unicodedata
 test_univnewlines
@@ -326,6 +335,7 @@ test_userstring
 test_utf8_mode
 test_utf8source
 test_uu
+test_uuid
 test_venv
 test_wait3
 test_wait4
@@ -342,13 +352,13 @@ test_xdrlib
 test_xml_dom_minicompat
 test_xml_etree
 test_xml_etree_c
-test_xmlrpc_net
 test_xxlimited
 test_xxtestfuzz
 test_yield_from
 test_zipapp
-test_zipimport
+test_zipfile
 test_zipfile64
+test_zipimport
 test_zipimport_support
 test_zlib
 
@@ -362,38 +372,31 @@ test_zlib
 #test_re
 
 # *********************************************
+# failing tests (wasm32-emscripten str[fp]time issues)
+# *********************************************
+#test_datetime
+#test_strftime
+#test_strptime
+#test_time
+
+# *********************************************
 # failing tests (wasm32-emscripten issues)
 # *********************************************
 #test_compileall
-#test_datetime
 #test_distutils
 #test_doctest
 #test_docxmlrpc
-#test_fileio
-#test_genericalias
 #test_genericpath
-#test_getpass
-#test_interpreters
 #test_ntpath
 #test_pathlib
-#test_poll
 #test_posixpath
-#test_pwd
-#test_pyexpat
 #test_script_helper
 #test_shutil
 #test_signal
-#test_stat
-#test_strftime
-#test_strptime
 #test_tarfile
-#test_telnetlib
 #test_tempfile
 #test_threading
-#test_time
 #test_unicode_file
-# emscripten thread worker use lots of fds, breaks test_many_opens
-#test_zipfile
 
 # *********************************************
 # leaks file descriptors (wasm32-emscripten issues ???)
@@ -409,9 +412,6 @@ test_zlib
 # *********************************************
 #test_mmap
 #test_io
-#test_largefile
-#test_select
-#test_uuid
 
 # *********************************************
 # failing, aborting, timeout tests (sockets)
@@ -425,22 +425,24 @@ test_zlib
 #test_poplib
 #test_asyncgen
 #test_asyncore
-#test_builtin
 #test_contextlib_async
 #test_coroutines
 #test_httplib
 #test_imaplib
-#test_inspect
 #test_mailbox
-#test_mmap
 #test_pdb
+#test_poll
 #test_pydoc
+#test_select
 #test_selectors
 #test_smtpd
 #test_smtplib
+#test_smtpnet
 #test_socket
+#test_socketserver
 #test_support
 #test_sys_settrace
+#test_telnetlib
 #test_unittest
 #test_urllib
 #test_urllib2
@@ -448,3 +450,4 @@ test_zlib
 #test_urllib2net
 #test_urllib_response
 #test_urllibnet
+#test_xmlrpc_net
