@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-
+set -e
 
 mkdir -p cpython/builddir/emscripten-browser
 
 # install emcc ports so configure is able to detect the dependencies
-embuilder build zlib
+embuilder build zlib bzip2
 
 pushd cpython/builddir/emscripten-browser
 CONFIG_SITE=../../Tools/wasm/config.site-wasm32-emscripten \

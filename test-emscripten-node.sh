@@ -7,6 +7,6 @@ else
     ARGS="$@"
 fi
 
-node --experimental-wasm-threads --experimental-wasm-bulk-memory \
+exec node --experimental-wasm-threads --experimental-wasm-bulk-memory \
     cpython/builddir/emscripten-node/python.js \
     -m test $ARGS
