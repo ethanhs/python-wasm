@@ -12,7 +12,8 @@ CONFIG_SITE=../../Tools/wasm/config.site-wasm32-emscripten \
     --host=wasm32-unknown-emscripten \
     --build=$(../../config.guess) \
     --with-emscripten-target=browser \
-    --with-build-python=$(pwd)/../build/python
+    --with-build-python=$(pwd)/../build/python \
+    "$@"
 
 emmake make -j$(nproc)
 
