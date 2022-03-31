@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -e
 
+if command -v ccache 2>&1 >/dev/null; then
+    export EM_COMPILER_WRAPPER=ccache
+fi
+
 mkdir -p cpython/builddir/emscripten-browser
 
 # install emcc ports so configure is able to detect the dependencies
