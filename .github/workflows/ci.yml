@@ -131,6 +131,7 @@ jobs:
             cpython/builddir/emscripten-browser/python.wasm
             cpython/builddir/emscripten-browser/python.html
             cpython/builddir/emscripten-browser/python.js
+            cpython/builddir/emscripten-browser/python.worker.js
             cpython/builddir/emscripten-browser/python.data
           if-no-files-found: error
       - name: "Upload build artifacts"

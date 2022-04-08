@@ -16,6 +16,7 @@ CONFIG_SITE=../../Tools/wasm/config.site-wasm32-emscripten \
     --host=wasm32-unknown-emscripten \
     --build=$(../../config.guess) \
     --with-emscripten-target=browser \
+    --enable-wasm-dynamic-linking=no \
     --with-build-python=$(pwd)/../build/python \
     "$@"
 
