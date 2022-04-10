@@ -7,10 +7,20 @@ const clearButton = document.getElementById('clear')
 window.onload = () => {
     const terminal = new WasmTerminal()
     terminal.open(document.getElementById('terminal'))
+    
+    const text_codec = new TextDecoder()
 
+    function b_utf8(s) {
+        var ary = []
+        for ( var i=0; i<s.length; i+=1 ) {
+            ary.push( s.substr(i,1).charCodeAt(0) )
+        }
+        return text_codec.decode(new Uint8Array(ary) )
+    }
+    
     const stdio = {
-        stdout: (s) => { terminal.print(s) },
-        stderr: (s) => { terminal.print(s) },
+        stdout: (s) => { terminal.print(b_utf8(s)) },
+        stderr: (s) => { terminal.print(b_utf8(s)) },
         stdin: async () => {
             return await terminal.prompt()
         }
