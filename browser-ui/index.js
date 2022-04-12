@@ -31,5 +31,5 @@ window.onload = () => {
         clearButton.removeAttribute('disabled')
     }
 
-    const pythonWorkerManager = new WorkerManager('/worker/worker.js', stdio, readyCallback)
+    const pythonWorkerManager = new WorkerManager('./worker/worker.js', stdio, readyCallback)
 }
