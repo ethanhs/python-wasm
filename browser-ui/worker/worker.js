@@ -35,18 +35,35 @@ class StdinBuffer {
     }
 }
 
-const stdoutBufSize = 128;
-const stdoutBuf = new Int32Array()
+const stdoutBufSize = 4;  // Maximum bytes for UTF-8 char
+const stdoutBuf = new Uint8Array(stdoutBufSize)
 let index = 0;
+let tailOctets = 0;
+
+// Return tail octets for this character https://sethmlarson.dev/blog/utf-8
+const countTailOctets = (charCode) => {
+    if (charCode >> 7 == 0b0) return 0;
+    if (charCode >> 5 == 0b110) return 1;
+    if (charCode >> 4 == 0b1110) return 2;
+    if (charCode >> 3 == 0b11110) return 3;
+}
 
 const stdout = (charCode) => {
-    if (charCode) {
+    stdoutBuf[index] = charCode;
+    charCode = stdoutBuf[index];
+    index++;
+    if (tailOctets > 0) {
+        tailOctets--;
+    } else {
+        tailOctets = countTailOctets(charCode);
+    }
+    if (tailOctets == 0) {
         postMessage({
             type: 'stdout',
-            stdout: String.fromCharCode(charCode),
+            stdout: new TextDecoder("utf-8").decode(stdoutBuf.slice(0, index).buffer),
         })
-    } else {
-        console.log(typeof charCode, charCode)
+        stdoutBuf.fill(0);
+        index = 0;
     }
 }
 
