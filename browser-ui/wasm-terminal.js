@@ -91,8 +91,11 @@ export class WasmTerminal {
     this.xterm.clear();
   }
 
-  print(message) {
-    const normInput = message.replace(/[\r\n]+/g, "\n").replace(/\n/g, "\r\n");
-    this.xterm.write(normInput);
+  print(charCode) {
+    let array = [charCode];
+    if (charCode == 10) {
+      array = [13, 10];  // Replace \n with \r\n
+    }
+    this.xterm.write(new Uint8Array(array));
   }
 }
