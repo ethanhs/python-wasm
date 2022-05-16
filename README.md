@@ -2,6 +2,8 @@
 
 Build scripts and configuration for building CPython for Emscripten.
 
+Check out Christian Heimes' talk about the effort at PyConDE: https://www.youtube.com/watch?v=oa2LllRZUlU
+
 Pretty straight forward. First, [install emscripten](https://emscripten.org/docs/getting_started/downloads.html).
 Then, run the following commands:
 
