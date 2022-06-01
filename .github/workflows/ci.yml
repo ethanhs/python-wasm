@@ -69,7 +69,6 @@ jobs:
           test -e cpython/builddir/emscripten-node/python.wasm || exit 1
       - name: "Print test.pythoninfo"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-node.sh -m test.pythoninfo
-        continue-on-error: true
       - name: "Run tests"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh
       - name: "Upload node build artifacts"
@@ -80,6 +79,7 @@ jobs:
             cpython/builddir/emscripten-node/python.wasm
             cpython/builddir/emscripten-node/python.worker.js
             cpython/builddir/emscripten-node/python.js
+            cpython/builddir/emscripten-node/build/lib.emscripten-wasm32-3.*/_sysconfigdata__emscripten_wasm32-emscripten.py
           if-no-files-found: error
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
@@ -90,6 +90,7 @@ jobs:
             cpython/builddir/emscripten-node/config.cache
             cpython/builddir/emscripten-node/Makefile
             cpython/builddir/emscripten-node/pyconfig.h
+            cpython/builddir/emscripten-node/pybuilddir.txt
             cpython/builddir/emscripten-node/libpython*.a
             cpython/builddir/emscripten-node/Modules/Setup.local
             cpython/builddir/emscripten-node/Modules/Setup.stdlib
@@ -143,6 +144,7 @@ jobs:
             cpython/builddir/emscripten-browser/config.cache
             cpython/builddir/emscripten-browser/Makefile
             cpython/builddir/emscripten-browser/pyconfig.h
+            cpython/builddir/emscripten-browser/pybuilddir.txt
             cpython/builddir/emscripten-browser/libpython*.a
             cpython/builddir/emscripten-browser/Modules/Setup.local
             cpython/builddir/emscripten-browser/Modules/Setup.stdlib
@@ -150,6 +152,62 @@ jobs:
             cpython/builddir/emscripten-browser/Modules/_decimal/libmpdec/libmpdec.a
             cpython/builddir/emscripten-browser/Modules/expat/libexpat.a
             cpython/builddir/emscripten-browser/Programs/python.o
+          if-no-files-found: error
+  wasi:
+    name: "Build WASI"
+    runs-on: "ubuntu-latest"
+    needs: build-python
+    steps:
+      - name: "checkout python-wasm"
+        uses: "actions/checkout@v2"
+      - name: "Fetch cached build Python"
+        uses: actions/cache@v2
+        with:
+          path: cpython
+          key: cpython-${{ runner.os }}-${{ github.sha }}
+      - name: "Check build Python"
+        run: |
+          test -e cpython/builddir/build/python || exit 1
+          test -e cpython/configure || exit 2
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
+      - name: "Build WASI Python"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-wasi.sh
+      - name: "Check artifacts"
+        run: |
+          ls -la --si cpython/builddir/wasi/python*
+          test -e cpython/builddir/wasi/python.wasm || exit 1
+      - name: "Print test.pythoninfo"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-wasi.sh -m test.pythoninfo
+      - name: "Run tests"
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-wasi.sh
+        # some WASI tests are failing
+        continue-on-error: true
+      - name: "Upload node build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: wasi
+          path: |
+            cpython/builddir/wasi/python.wasm
+            cpython/builddir/wasi/build/lib.wasi-wasm32-3.*/_sysconfigdata__wasi_wasm32-wasi.py
+          if-no-files-found: error
+      - name: "Upload build artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-wasi
+          path: |
+            cpython/builddir/wasi/config.log
+            cpython/builddir/wasi/config.cache
+            cpython/builddir/wasi/Makefile
+            cpython/builddir/wasi/pybuilddir.txt
+            cpython/builddir/wasi/pyconfig.h
+            cpython/builddir/wasi/libpython*.a
+            cpython/builddir/wasi/Modules/Setup.local
+            cpython/builddir/wasi/Modules/Setup.stdlib
+            cpython/builddir/wasi/Modules/config.c
+            cpython/builddir/wasi/Modules/_decimal/libmpdec/libmpdec.a
+            cpython/builddir/wasi/Modules/expat/libexpat.a
+            cpython/builddir/wasi/Programs/python.o
           if-no-files-found: error
   ghpages:
     name: "Upload to GitHub pages"
