@@ -183,7 +183,7 @@ jobs:
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-wasi.sh
         # some WASI tests are failing
         continue-on-error: true
-      - name: "Upload node build artifacts"
+      - name: "Upload WASI artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: wasi
