@@ -79,6 +79,7 @@ jobs:
             cpython/builddir/emscripten-node/python.wasm
             cpython/builddir/emscripten-node/python.worker.js
             cpython/builddir/emscripten-node/python.js
+            cpython/builddir/emscripten-node/pybuilddir.txt
             cpython/builddir/emscripten-node/build/lib.emscripten-wasm32-3.*/_sysconfigdata__emscripten_wasm32-emscripten.py
           if-no-files-found: error
       - name: "Upload build artifacts"
@@ -90,7 +91,6 @@ jobs:
             cpython/builddir/emscripten-node/config.cache
             cpython/builddir/emscripten-node/Makefile
             cpython/builddir/emscripten-node/pyconfig.h
-            cpython/builddir/emscripten-node/pybuilddir.txt
             cpython/builddir/emscripten-node/libpython*.a
             cpython/builddir/emscripten-node/Modules/Setup.local
             cpython/builddir/emscripten-node/Modules/Setup.stdlib
@@ -189,6 +189,7 @@ jobs:
           name: wasi
           path: |
             cpython/builddir/wasi/python.wasm
+            cpython/builddir/wasi/pybuilddir.txt
             cpython/builddir/wasi/build/lib.wasi-wasm32-3.*/_sysconfigdata__wasi_wasm32-wasi.py
           if-no-files-found: error
       - name: "Upload build artifacts"
@@ -199,7 +200,6 @@ jobs:
             cpython/builddir/wasi/config.log
             cpython/builddir/wasi/config.cache
             cpython/builddir/wasi/Makefile
-            cpython/builddir/wasi/pybuilddir.txt
             cpython/builddir/wasi/pyconfig.h
             cpython/builddir/wasi/libpython*.a
             cpython/builddir/wasi/Modules/Setup.local
