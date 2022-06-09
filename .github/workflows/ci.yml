@@ -55,7 +55,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ env.TODAY }}-${{ github.sha }}
   emscripte-node:
     name: "Build Emscripten node ${{ matrix.pythonbranch }}"
     runs-on: "ubuntu-latest"
@@ -73,7 +73,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ env.TODAY }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
@@ -133,7 +133,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ env.TODAY }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
@@ -191,7 +191,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ env.TODAY }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
