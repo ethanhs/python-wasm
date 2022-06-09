@@ -17,9 +17,22 @@ on:
         required: false
 
 jobs:
-  build-python:
-    name: "Build build Python"
+  pull-buildcontainer:
+    name: "Pull & cache build container"
     runs-on: "ubuntu-latest"
+    steps:
+      - name: "checkout python-wasm"
+        uses: "actions/checkout@v2"
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
+  build-python:
+    name: "Build build Python ${{ matrix.pythonbranch }}"
+    runs-on: "ubuntu-latest"
+    needs: pull-buildcontainer
+    strategy:
+      fail-fast: false
+      matrix:
+        pythonbranch: [main, 3.11]
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
@@ -28,7 +41,7 @@ jobs:
         with:
           repository: python/cpython
           path: cpython
-          ref: main
+          ref: ${{ matrix.pythonbranch }}
       - name: "Verify checkout"
         shell: bash
         run: |
@@ -42,25 +55,29 @@ jobs:
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ runner.os }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
   emscripte-node:
-    name: "Build Emscripten node"
+    name: "Build Emscripten node ${{ matrix.pythonbranch }}"
     runs-on: "ubuntu-latest"
     needs: build-python
+    strategy:
+      fail-fast: false
+      matrix:
+        pythonbranch: [main, 3.11]
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Fetch cached build Python"
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ runner.os }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
           test -e cpython/configure || exit 2
-      - name: "Common prepare step"
-        uses: ./.github/actions/prepare
       - name: "Build emscripten Python for node"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-node.sh
       - name: "Check artifacts"
@@ -74,7 +91,7 @@ jobs:
       - name: "Upload node build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: emscripten-node
+          name: emscripten-node-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/emscripten-node/python.wasm
             cpython/builddir/emscripten-node/python.worker.js
@@ -85,7 +102,7 @@ jobs:
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: build-node
+          name: build-node-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/emscripten-node/config.log
             cpython/builddir/emscripten-node/config.cache
@@ -100,23 +117,27 @@ jobs:
             cpython/builddir/emscripten-node/Programs/python.o
           if-no-files-found: error
   emscripte-browser:
-    name: "Build Emscripten browser"
+    name: "Build Emscripten browser ${{ matrix.pythonbranch }}"
     runs-on: "ubuntu-latest"
     needs: build-python
+    strategy:
+      fail-fast: false
+      matrix:
+        pythonbranch: [main, 3.11]
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Fetch cached build Python"
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ runner.os }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
           test -e cpython/configure || exit 2
-      - name: "Common prepare step"
-        uses: ./.github/actions/prepare
       - name: "Build emscripten Python for browser"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-emscripten-browser.sh
       - name: "Check artifacts"
@@ -127,7 +148,7 @@ jobs:
       - name: "Upload browser build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: emscripten-browser
+          name: emscripten-browser-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/emscripten-browser/python.wasm
             cpython/builddir/emscripten-browser/python.html
@@ -138,7 +159,7 @@ jobs:
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: build-browser
+          name: build-browser-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/emscripten-browser/config.log
             cpython/builddir/emscripten-browser/config.cache
@@ -154,23 +175,27 @@ jobs:
             cpython/builddir/emscripten-browser/Programs/python.o
           if-no-files-found: error
   wasi:
-    name: "Build WASI"
+    name: "Build WASI ${{ matrix.pythonbranch }}"
     runs-on: "ubuntu-latest"
     needs: build-python
+    strategy:
+      fail-fast: false
+      matrix:
+        pythonbranch: [main, 3.11]
     steps:
       - name: "checkout python-wasm"
         uses: "actions/checkout@v2"
+      - name: "Common prepare step"
+        uses: ./.github/actions/prepare
       - name: "Fetch cached build Python"
         uses: actions/cache@v2
         with:
           path: cpython
-          key: cpython-${{ runner.os }}-${{ github.sha }}
+          key: cpython-${{ matrix.pythonbranch }}-${{ runner.os }}-${{ steps.get-date.outputs.today }}-${{ github.sha }}
       - name: "Check build Python"
         run: |
           test -e cpython/builddir/build/python || exit 1
           test -e cpython/configure || exit 2
-      - name: "Common prepare step"
-        uses: ./.github/actions/prepare
       - name: "Build WASI Python"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-wasi.sh
       - name: "Check artifacts"
@@ -186,7 +211,7 @@ jobs:
       - name: "Upload WASI artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: wasi
+          name: wasi-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/wasi/python.wasm
             cpython/builddir/wasi/pybuilddir.txt
@@ -195,7 +220,7 @@ jobs:
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
         with:
-          name: build-wasi
+          name: build-wasi-${{ matrix.pythonbranch }}
           path: |
             cpython/builddir/wasi/config.log
             cpython/builddir/wasi/config.cache
@@ -219,7 +244,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
         with:
-          name: emscripten-browser
+          name: emscripten-browser-main
           path: wasm
       - name: "Prepare artifacts for Github Pages"
         run: |
