@@ -26,11 +26,4 @@ CONFIG_SITE=../../Tools/wasm/config.site-wasm32-wasi \
 
 make -j$(nproc)
 
-# XXX hack
-# Symlink pybuilddir.txt and build lib directory with sysconfig data into
-# VPATH root. "--mapdir .::../../" uses VPATH root as CWD.
-mkdir -p ../../build
-ln -srf -t ../../ pybuilddir.txt
-ln -srf -t ../../build/ build/lib.wasi-wasm32-3.*
-
 popd

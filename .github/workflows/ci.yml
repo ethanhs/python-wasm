@@ -70,7 +70,7 @@ jobs:
       - name: "Print test.pythoninfo"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-node.sh -m test.pythoninfo
       - name: "Run tests"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh -u all -W --slowest --fail-env-changed
       - name: "Upload node build artifacts"
         uses: actions/upload-artifact@v2
         with:
@@ -180,7 +180,7 @@ jobs:
       - name: "Print test.pythoninfo"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-wasi.sh -m test.pythoninfo
       - name: "Run tests"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-wasi.sh
+        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-wasi.sh -u all -W --slowest --fail-env-changed
         # some WASI tests are failing
         continue-on-error: true
       - name: "Upload WASI artifacts"
