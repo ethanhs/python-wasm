@@ -25,5 +25,7 @@ CONFIG_SITE=../../Tools/wasm/config.site-wasm32-wasi \
     --disable-ipv6
 
 make -j$(nproc)
-
 popd
+
+# sentinel for getpath.py
+touch cpython/Modules/Setup.local
