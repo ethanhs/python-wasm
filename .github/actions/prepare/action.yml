@@ -11,13 +11,13 @@ runs:
       id: get-date
       shell: bash
       run: |
-        echo "::set-output name=date::$(/bin/date -u "+%Y%m%d")"
+        echo "TODAY=$(/bin/date -u "+%Y%m%d")" >> $GITHUB_ENV
     - name: Get container cache
       id: container-cache
       uses: actions/cache@v1
       with:
         path: /tmp/container-cache
-        key: image-cache-${{ steps.get-date.outputs.date }}
+        key: image-cache-${{ env.TODAY }}
     - name: "Pull build image"
       if: ${{ steps.container-cache.outputs.cache-hit != 'true' }}
       shell: bash
