@@ -1,4 +1,4 @@
 {
     "image": "quay.io/tiran/cpythonbuild:emsdk3",
-    "postCreateCommand": "git clone https://github.com/python/cpython.git /python-wasm/cpython"
+    "postCreateCommand": "git clone https://github.com/python/cpython.git"
 }
