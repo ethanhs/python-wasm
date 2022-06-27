@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
+set -e
 
-exec node --experimental-wasm-threads --experimental-wasm-bulk-memory \
-    cpython/builddir/emscripten-node/python.js "$@"
+pushd cpython/builddir/emscripten-node
+exec node \
+    --experimental-wasm-threads \
+    --experimental-wasm-bulk-memory \
+    --experimental-wasm-bigint \
+    python.js "$@"
