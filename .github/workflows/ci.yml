@@ -202,8 +202,6 @@ jobs:
         run: |
           ls -la --si cpython/builddir/wasi/python*
           test -e cpython/builddir/wasi/python.wasm || exit 1
-      - name: "list"
-        run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ls
       - name: "Print test.pythoninfo"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-wasi.sh -m test.pythoninfo
       - name: "Run tests"
