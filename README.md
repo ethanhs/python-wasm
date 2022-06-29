@@ -36,14 +36,26 @@ Once you've built the Emscripten'd Python, you can rebuild it via
 which will rebuild Python targeting emscripten and re-generate the `python.{html, wasm, js}`
 
 ## Test build artifacts
-You can also download builds from our CI and test WASM build locally
 
-* download the *wasm* build artifact bundle from the latest
-  [CI workflow](https://github.com/ethanhs/python-wasm/actions?query=branch%3Amain)
-  actions run.
-* unzip ``wasm.zip``
+You can also download builds from our [CI workflow](https://github.com/ethanhs/python-wasm/actions?query=branch%3Amain)
+and test WASM builds locally.
+
+### Emscripten browser build
+
+* download and unzip the ``emscripten-browser-main.zip`` build artifact
 * run a local webserver in the same directory as ``python.html``,
    e.g. ``python3 -m http.server``
 * open http://localhost:8000/python.html
 * enter commands into the browser modal window and check the web developer
   console (*F12*) for output. You may need to hit "Cancel" on the modal after sending input for output to appear.
+
+### Emscripten NodeJS build
+
+* download and unzip the ``emscripten-node-main.zip`` build artifact
+* run ``node python.js`` (older versions may need ``--experimental-wasm-bigint``)
+
+### WASI
+
+* download and unzip the ``wasi-main.zip`` build artifact
+* install [wasmtime](https://wasmtime.dev/)
+* run ``wasmtime run --dir . -- python.wasm``
