@@ -51,6 +51,8 @@ jobs:
         uses: ./.github/actions/prepare
       - name: "Build build Python"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./build-python-build.sh
+      - name: "Store CPython commit hash"
+        run: git --git-dir=cpython/.git rev-parse HEAD > cpython/commit.txt
       - name: "Cache build Python"
         uses: actions/cache@v2
         with:
@@ -88,16 +90,29 @@ jobs:
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./run-python-node.sh -m test.pythoninfo
       - name: "Run tests"
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh -u all -W --slowest --fail-env-changed
+      - name: "Copy stdlib"
+        run: |
+          sudo chown $(id -u):$(id -g) -R cpython
+          cp cpython/commit.txt cpython/builddir/emscripten-node/
+          cp cpython/LICENSE cpython/builddir/emscripten-node/
+          cp -R cpython/Lib cpython/builddir/emscripten-node/
+          pushd cpython/builddir/emscripten-node/
+          rm -rf Lib/curses Lib/ensurepip/ Lib/distutils/ Lib/idlelib/ Lib/test/ Lib/tkinter/ Lib/turtledemo/ Lib/venv/
+          find -name __pycache__ | xargs rm -rf
+          popd
       - name: "Upload node build artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: emscripten-node-${{ matrix.pythonbranch }}
           path: |
+            cpython/builddir/emscripten-node/commit.txt
+            cpython/builddir/emscripten-node/LICENSE
             cpython/builddir/emscripten-node/python.wasm
             cpython/builddir/emscripten-node/python.worker.js
             cpython/builddir/emscripten-node/python.js
             cpython/builddir/emscripten-node/pybuilddir.txt
             cpython/builddir/emscripten-node/build/lib.emscripten-wasm32-3.*/_sysconfigdata__emscripten_wasm32-emscripten.py
+            cpython/builddir/emscripten-node/Lib/
           if-no-files-found: error
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
@@ -145,11 +160,18 @@ jobs:
           ls -la --si cpython/builddir/emscripten-browser/python*
           ls -la cpython/builddir/emscripten-browser/Modules/
           test -e cpython/builddir/emscripten-browser/python.data || exit 1
+      - name: "Copy commit.txt and LICENSE"
+        run: |
+          sudo chown $(id -u):$(id -g) -R cpython
+          cp cpython/commit.txt cpython/builddir/emscripten-browser/
+          cp cpython/LICENSE cpython/builddir/emscripten-browser/
       - name: "Upload browser build artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: emscripten-browser-${{ matrix.pythonbranch }}
           path: |
+            cpython/builddir/emscripten-browser/commit.txt
+            cpython/builddir/emscripten-browser/LICENSE
             cpython/builddir/emscripten-browser/python.wasm
             cpython/builddir/emscripten-browser/python.html
             cpython/builddir/emscripten-browser/python.js
@@ -208,14 +230,27 @@ jobs:
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-wasi.sh -u all -W --slowest --fail-env-changed
         # some WASI tests are failing
         continue-on-error: true
+      - name: "Copy stdlib"
+        run: |
+          sudo chown $(id -u):$(id -g) -R cpython
+          cp cpython/commit.txt cpython/builddir/wasi/
+          cp cpython/LICENSE cpython/builddir/wasi/
+          cp -R cpython/Lib cpython/builddir/wasi/
+          pushd cpython/builddir/wasi/
+          rm -rf Lib/curses Lib/ensurepip/ Lib/distutils/ Lib/idlelib/ Lib/test/ Lib/tkinter/ Lib/turtledemo/ Lib/venv/
+          find -name __pycache__ | xargs rm -rf
+          popd
       - name: "Upload WASI artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: wasi-${{ matrix.pythonbranch }}
           path: |
+            cpython/builddir/wasi/LICENSE
+            cpython/builddir/wasi/commit.txt
             cpython/builddir/wasi/python.wasm
             cpython/builddir/wasi/pybuilddir.txt
             cpython/builddir/wasi/build/lib.wasi-wasm32-3.*/_sysconfigdata__wasi_wasm32-wasi.py
+            cpython/builddir/wasi/Lib/
           if-no-files-found: error
       - name: "Upload build artifacts"
         uses: actions/upload-artifact@v2
