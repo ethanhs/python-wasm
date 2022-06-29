@@ -92,7 +92,7 @@ jobs:
         run: docker run --rm -v $(pwd):/build -w /build quay.io/tiran/cpythonbuild:emsdk3 ./test-emscripten-node.sh -u all -W --slowest --fail-env-changed
       - name: "Copy stdlib"
         run: |
-          set -e
+          sudo chown $(id -u):$(id -g) -R cpython
           cp cpython/commit.txt cpython/builddir/emscripten-node/
           cp cpython/LICENSE cpython/builddir/emscripten-node/
           cp -R cpython/Lib cpython/builddir/emscripten-node/
@@ -162,6 +162,7 @@ jobs:
           test -e cpython/builddir/emscripten-browser/python.data || exit 1
       - name: "Copy commit.txt and LICENSE"
         run: |
+          sudo chown $(id -u):$(id -g) -R cpython
           cp cpython/commit.txt cpython/builddir/emscripten-browser/
           cp cpython/LICENSE cpython/builddir/emscripten-browser/
       - name: "Upload browser build artifacts"
@@ -231,7 +232,7 @@ jobs:
         continue-on-error: true
       - name: "Copy stdlib"
         run: |
-          set -e
+          sudo chown $(id -u):$(id -g) -R cpython
           cp cpython/commit.txt cpython/builddir/wasi/
           cp cpython/LICENSE cpython/builddir/wasi/
           cp -R cpython/Lib cpython/builddir/wasi/
