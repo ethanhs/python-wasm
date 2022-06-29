@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-git clone https://github.com/python/cpython.git
+git clone --depth 1 https://github.com/python/cpython.git
 # make build directories for build (the current system architecture)
 # and host, the emscripten/wasi architecture
 mkdir -p cpython/builddir/build
